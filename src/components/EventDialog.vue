@@ -176,6 +176,14 @@
             <v-card-actions>
                 <v-spacer />
                 <v-btn
+                    v-if="form.id"
+                    color="pink"
+                    text
+                    @click="deleteEvent()"
+                >
+                    Delete
+                </v-btn>
+                <v-btn
                     color="blue darken-1"
                     text
                     @click="$store.commit('closeDialog')"
@@ -316,6 +324,10 @@ export default Vue.extend({
             }
 
             this.$store.dispatch('saveEvent', this.form);
+            this.$store.commit('closeDialog');
+        },
+        deleteEvent() {
+            this.$store.commit('deleteEventById', this.form.id);
             this.$store.commit('closeDialog');
         },
     },

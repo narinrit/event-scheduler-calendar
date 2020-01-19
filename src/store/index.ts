@@ -126,6 +126,10 @@ export default new Vuex.Store({
                 id: Math.random(),
             });
         },
+        deleteEventById(state, id) {
+            const index = state.events.findIndex((item: any) => item.id === id);
+            state.events.splice(index, 1);
+        },
         updateEvent(state, event) {
             const index = state.events.findIndex((item) => item.id === event.id);
             state.events[index] = event;
