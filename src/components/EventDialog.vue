@@ -164,24 +164,10 @@
                             mandatory
                         >
                             <v-btn
-                                color="blue"
-                                value="blue"
-                            />
-                            <v-btn
-                                color="green"
-                                value="green"
-                            />
-                            <v-btn
-                                color="red"
-                                value="red"
-                            />
-                            <v-btn
-                                color="orange"
-                                value="orange"
-                            />
-                            <v-btn
-                                color="yellow"
-                                value="yellow"
+                                v-for="color in colors"
+                                :key="color"
+                                :color="color"
+                                :value="color"
                             />
                         </v-btn-toggle>
                     </div>
@@ -239,6 +225,7 @@ export default Vue.extend({
                 text: 'Yearly',
             },
         ],
+        colors: ['blue', 'green', 'red', 'orange', 'yellow'],
     }),
     computed: {
         open: {
