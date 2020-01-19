@@ -11,20 +11,20 @@ export default new Vuex.Store({
         events: [
             {
                 id: 1,
-                name: 'Test',
-                start: '2020-01-15 09:00',
-                end: '2020-01-15 10:00',
+                name: 'New Year',
+                start: '2020-01-01 00:00',
+                end: '2020-01-01 23:59',
                 color: 'orange',
                 repeat: null,
                 note: '',
             },
             {
                 id: 2,
-                name: 'Repeat Day',
-                start: '2019-12-02 09:00',
-                end: '2019-12-02 10:00',
+                name: 'Thai Tech Pro Submit Project',
+                start: '2020-01-20 08:00',
+                end: '2020-01-20 09:00',
                 color: 'green',
-                repeat: 'day',
+                repeat: null,
                 note: '',
             },
             {
@@ -48,8 +48,8 @@ export default new Vuex.Store({
             {
                 id: 5,
                 name: 'Repeat Week',
-                start: '2019-12-16 09:00',
-                end: '2019-12-16 10:00',
+                start: '2019-12-19 09:00',
+                end: '2019-12-19 10:00',
                 color: 'red',
                 repeat: 'week',
                 note: '',
@@ -155,7 +155,7 @@ export default new Vuex.Store({
     },
     actions: {
         openNewEventDialog({ commit }) {
-            commit('openNewEventDialog');
+            commit('openDialog');
             commit('setDialogData', {
                 id: null,
                 name: '',

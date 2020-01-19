@@ -21,55 +21,128 @@
                         required
                     />
 
-                    <v-menu
-                        v-model="menu1"
-                        :close-on-content-click="false"
-                        :nudge-right="33"
-                        :nudge-top="20"
-                        offset-y
-                        min-width="290px"
-                    >
-                        <template v-slot:activator="{ on }">
-                            <v-text-field
-                                v-model="form.start"
-                                label="Start"
-                                prepend-icon="mdi-calendar"
-                                readonly
-                                :rules="[
-                                    v => !!v || 'This field is required.',
-                                ]"
-                                v-on="on"
-                            />
-                        </template>
-                        <v-date-picker
-                            v-model="form.start"
-                            @input="menu1 = false"
-                        />
-                    </v-menu>
+                    <v-row>
+                        <v-col cols="6">
+                            <v-menu
+                                v-model="menus[0]"
+                                :close-on-content-click="false"
+                                :nudge-right="33"
+                                :nudge-top="20"
+                                offset-y
+                                min-width="290px"
+                            >
+                                <template v-slot:activator="{ on }">
+                                    <v-text-field
+                                        v-model="startDate"
+                                        label="Start date"
+                                        prepend-icon="mdi-calendar"
+                                        readonly
+                                        :rules="[
+                                            v => !!v || 'This field is required.',
+                                        ]"
+                                        v-on="on"
+                                    />
+                                </template>
+                                <v-date-picker
+                                    v-model="startDate"
+                                    @input="menus[0] = false"
+                                />
+                            </v-menu>
+                        </v-col>
 
-                    <v-menu
-                        v-model="menu2"
-                        :close-on-content-click="false"
-                        :nudge-right="33"
-                        :nudge-top="20"
-                        offset-y
-                        min-width="290px"
-                    >
-                        <template v-slot:activator="{ on }">
-                            <v-text-field
-                                v-model="form.end"
-                                label="End"
-                                prepend-icon="mdi-calendar"
-                                readonly
-                                :rules="endDateRules"
-                                v-on="on"
-                            />
-                        </template>
-                        <v-date-picker
-                            v-model="form.end"
-                            @input="menu2 = false"
-                        />
-                    </v-menu>
+                        <v-col cols="6">
+                            <v-menu
+                                ref="menu1"
+                                v-model="menus[1]"
+                                :close-on-content-click="false"
+                                :return-value.sync="startTime"
+                                :nudge-right="33"
+                                :nudge-top="20"
+                                offset-y
+                                min-width="290px"
+                            >
+                                <template v-slot:activator="{ on }">
+                                    <v-text-field
+                                        v-model="startTime"
+                                        label="Start time"
+                                        prepend-icon="mdi-clock"
+                                        readonly
+                                        :rules="[
+                                            v => !!v || 'This field is required.',
+                                        ]"
+                                        v-on="on"
+                                    />
+                                </template>
+                                <v-time-picker
+                                    v-model="startTime"
+                                    format="24hr"
+                                    @click:minute="() => {
+                                        $refs.menu1.save(startTime);
+                                        menus[1] = false
+                                    }"
+                                />
+                            </v-menu>
+                        </v-col>
+                    </v-row>
+
+                    <v-row>
+                        <v-col cols="6">
+                            <v-menu
+                                v-model="menus[2]"
+                                :close-on-content-click="false"
+                                :nudge-right="33"
+                                :nudge-top="20"
+                                offset-y
+                                min-width="290px"
+                            >
+                                <template v-slot:activator="{ on }">
+                                    <v-text-field
+                                        v-model="endDate"
+                                        label="Start date"
+                                        prepend-icon="mdi-calendar"
+                                        readonly
+                                        :rules="endDateRules"
+                                        v-on="on"
+                                    />
+                                </template>
+                                <v-date-picker
+                                    v-model="endDate"
+                                    @input="menus[2] = false"
+                                />
+                            </v-menu>
+                        </v-col>
+
+                        <v-col cols="6">
+                            <v-menu
+                                ref="menu3"
+                                v-model="menus[3]"
+                                :close-on-content-click="false"
+                                :nudge-right="33"
+                                :nudge-top="20"
+                                offset-y
+                                min-width="290px"
+                            >
+                                <template v-slot:activator="{ on }">
+                                    <v-text-field
+                                        v-model="endTime"
+                                        label="Start time"
+                                        prepend-icon="mdi-clock"
+                                        readonly
+                                        :rules="endDateRules"
+                                        v-on="on"
+                                    />
+                                </template>
+                                <v-time-picker
+                                    v-model="endTime"
+                                    format="24hr"
+                                    @click:minute="() => {
+                                        $refs.menu3.save(startTime);
+                                        menus[3] = false
+                                    }"
+                                />
+                            </v-menu>
+                        </v-col>
+                    </v-row>
 
                     <v-select
                         v-model="form.repeat"
@@ -143,8 +216,7 @@ export default Vue.extend({
     name: 'EventDialog',
     data: () => ({
         valid: false,
-        menu1: false,
-        menu2: false,
+        menus: [],
         repeats: [
             {
                 value: null,
@@ -185,6 +257,57 @@ export default Vue.extend({
                 return this.$store.commit('setDialogData', data);
             },
         },
+        startDate: {
+            get(): string {
+                return moment(this.form.start).format('YYYY-MM-DD');
+            },
+            set(val: string) {
+                const newMoment = moment(val);
+                this.form.start = moment(this.form.start)
+                    .year(newMoment.year())
+                    .month(newMoment.month())
+                    .date(newMoment.date())
+                    .format('YYYY-MM-DD HH:mm');
+            },
+        },
+        startTime: {
+            get(): string {
+                return moment(this.form.start).format('HH:mm');
+            },
+            set(val: string) {
+                const newMoment = moment(`2000-01-01 ${val}`);
+                console.log(newMoment.hour());
+                this.form.start = moment(this.form.start)
+                    .hour(newMoment.hour())
+                    .minute(newMoment.minute())
+                    .format('YYYY-MM-DD HH:mm');
+            },
+        },
+        endDate: {
+            get(): string {
+                return moment(this.form.end).format('YYYY-MM-DD');
+            },
+            set(val: string) {
+                const newMoment = moment(val);
+                this.form.end = moment(this.form.end)
+                    .year(newMoment.year())
+                    .month(newMoment.month())
+                    .date(newMoment.date())
+                    .format('YYYY-MM-DD HH:mm');
+            },
+        },
+        endTime: {
+            get(): string {
+                return moment(this.form.end).format('HH:mm');
+            },
+            set(val: string) {
+                const newMoment = moment(`2000-01-01 ${val}`);
+                this.form.end = moment(this.form.end)
+                    .hour(newMoment.hour())
+                    .minute(newMoment.minute())
+                    .format('YYYY-MM-DD HH:mm');
+            },
+        },
         title() {
             if (this.form && this.form.id) {
                 return 'Edit Event';
@@ -194,16 +317,15 @@ export default Vue.extend({
         endDateRules(): any {
             return [
                 (v: any) => !!v || 'This field is required.',
-                (v: any) => moment(v).isAfter(this.form.start)
+                () => moment(this.form.end).isAfter(this.form.start)
                     || 'End date should not before start date',
             ];
         },
     },
     methods: {
         submit() {
-            if (!this.valid) {
-                // @ts-ignore
-                this.$refs.form.validate();
+            // @ts-ignore
+            if (!this.$refs.form.validate()) {
                 return;
             }
 
