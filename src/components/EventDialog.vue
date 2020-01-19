@@ -8,7 +8,11 @@
                 {{ title }}
             </v-card-title>
             <v-card-text>
-                <v-form v-if="form">
+                <v-form
+                    v-if="form"
+                    ref="form"
+                    v-model="valid"
+                >
                     <v-text-field
                         v-model="form.name"
                         label="Name"
@@ -31,6 +35,9 @@
                                 label="Start"
                                 prepend-icon="mdi-calendar"
                                 readonly
+                                :rules="[
+                                    v => !!v || 'This field is required.',
+                                ]"
                                 v-on="on"
                             />
                         </template>
@@ -54,6 +61,7 @@
                                 label="End"
                                 prepend-icon="mdi-calendar"
                                 readonly
+                                :rules="endDateRules"
                                 v-on="on"
                             />
                         </template>
@@ -118,7 +126,7 @@
                 <v-btn
                     color="primary"
                     depressed
-                    @click="dialogSubmit"
+                    @click="submit"
                 >
                     Save
                 </v-btn>
@@ -129,10 +137,12 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import moment from 'moment';
 
 export default Vue.extend({
     name: 'EventDialog',
     data: () => ({
+        valid: false,
         menu1: false,
         menu2: false,
         repeats: [
@@ -181,9 +191,22 @@ export default Vue.extend({
             }
             return 'Add Event';
         },
+        endDateRules(): any {
+            return [
+                (v: any) => !!v || 'This field is required.',
+                (v: any) => moment(v).isAfter(this.form.start)
+                    || 'End date should not before start date',
+            ];
+        },
     },
     methods: {
-        dialogSubmit() {
+        submit() {
+            if (!this.valid) {
+                // @ts-ignore
+                this.$refs.form.validate();
+                return;
+            }
+
             this.$store.dispatch('saveEvent', this.form);
             this.$store.commit('closeDialog');
         },
