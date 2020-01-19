@@ -5,7 +5,7 @@
     >
         <v-card>
             <v-card-title>
-                Add Event
+                {{ title }}
             </v-card-title>
             <v-card-text>
                 <v-form v-if="form">
@@ -69,15 +69,38 @@
                         label="Repeat"
                         prepend-icon="mdi-repeat"
                     />
-
                     <v-textarea
                         v-model="form.note"
                         label="Note"
                         prepend-icon="mdi-text"
                         rows="3"
                         filled
-                        hide-details
                     />
+
+                    <div class="text-center">
+                        <v-btn-toggle v-model="form.color">
+                            <v-btn
+                                color="blue"
+                                value="blue"
+                            />
+                            <v-btn
+                                color="green"
+                                value="green"
+                            />
+                            <v-btn
+                                color="red"
+                                value="red"
+                            />
+                            <v-btn
+                                color="orange"
+                                value="orange"
+                            />
+                            <v-btn
+                                color="yellow"
+                                value="yellow"
+                            />
+                        </v-btn-toggle>
+                    </div>
                 </v-form>
             </v-card-text>
             <v-card-actions>
@@ -148,6 +171,12 @@ export default Vue.extend({
             set(data) {
                 return this.$store.commit('setDialogData', data);
             },
+        },
+        title() {
+            if (this.form && this.form.id) {
+                return 'Edit Event';
+            }
+            return 'Add Event';
         },
     },
     methods: {

@@ -39,9 +39,12 @@
                     color="pink"
                     dark
                     rounded
-                    @click="openDialog"
+                    @click="$store.dispatch('openNewEventDialog')"
                 >
-                    <v-icon>mdi-plus</v-icon>
+                    <v-icon class="mr-2">
+                        mdi-plus
+                    </v-icon>
+                    Add Event
                 </v-btn>
             </v-app-bar>
 
@@ -51,7 +54,7 @@
                 :type="type"
                 :events="$store.getters.events"
                 :event-color="getEventColor"
-                @click:event="openDialog"
+                @click:event="openEvent"
             />
 
             <event-dialog />
@@ -107,26 +110,9 @@ export default Vue.extend({
         getEventColor(event: any) {
             return event.color;
         },
-        openDialog({ event }: any) {
+        openEvent({ event }: any) {
             if (event && event.id) {
-                const existsEvent = this.$store.getters.events
-                    .find((item: any) => item.id === event.id);
-
-                if (existsEvent) {
-                    this.$store.commit('openDialog');
-                    this.$store.commit('setDialogData', existsEvent);
-                }
-            } else {
-                this.$store.commit('openDialog');
-                this.$store.commit('setDialogData', {
-                    id: null,
-                    name: '',
-                    start: moment().hour(9).minute(0).format('YYYY-MM-DD HH:ss'),
-                    end: moment().hour(10).minute(0).format('YYYY-MM-DD HH:ss'),
-                    color: 'primary',
-                    repeat: null,
-                    note: '',
-                });
+                this.$store.dispatch('openEventDialogById', event.id);
             }
         },
     },

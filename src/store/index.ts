@@ -47,8 +47,8 @@ export default new Vuex.Store({
             {
                 id: 5,
                 name: 'Repeat Week',
-                start: '2019-01-14 09:00',
-                end: '2019-01-14 10:00',
+                start: '2019-12-16 09:00',
+                end: '2019-12-16 10:00',
                 color: 'red',
                 repeat: 'week',
                 note: '',
@@ -56,7 +56,7 @@ export default new Vuex.Store({
         ],
         dialog: {
             open: false,
-            data: null,
+            data: null as any,
         },
     },
     getters: {
@@ -151,8 +151,39 @@ export default new Vuex.Store({
         setDialogData(state, data) {
             state.dialog.data = { ...data };
         },
+        openNewEventDialog(state) {
+            state.dialog.open = true;
+            state.dialog.data = {
+                id: null,
+                name: '',
+                start: moment().hour(9).minute(0).format('YYYY-MM-DD HH:mm'),
+                end: moment().hour(10).minute(0).format('YYYY-MM-DD HH:mm'),
+                color: 'primary',
+                repeat: null,
+                note: '',
+            };
+        },
     },
     actions: {
+        openNewEventDialog({ commit }) {
+            commit('openNewEventDialog');
+            commit('setDialogData', {
+                id: null,
+                name: '',
+                start: moment().hour(9).minute(0).format('YYYY-MM-DD HH:mm'),
+                end: moment().hour(10).minute(0).format('YYYY-MM-DD HH:mm'),
+                color: 'primary',
+                repeat: null,
+                note: '',
+            });
+        },
+        openEventDialogById({ commit, getters }, id) {
+            const existsEvent = getters.events.find((item: any) => item.id === id);
+            if (existsEvent) {
+                commit('openDialog');
+                commit('setDialogData', existsEvent);
+            }
+        },
         saveEvent({ state, commit }, event) {
             if (event.id) {
                 commit('updateEvent', event);
