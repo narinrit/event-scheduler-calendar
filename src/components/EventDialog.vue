@@ -78,7 +78,10 @@
                     />
 
                     <div class="text-center">
-                        <v-btn-toggle v-model="form.color">
+                        <v-btn-toggle
+                            v-model="form.color"
+                            mandatory
+                        >
                             <v-btn
                                 color="blue"
                                 value="blue"
