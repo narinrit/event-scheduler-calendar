@@ -166,8 +166,8 @@ export default new Vuex.Store({
                 note: '',
             } as IEvent);
         },
-        openEventDialogById({ commit, getters }, id) {
-            const existsEvent = getters.events.find((item: any) => item.id === id);
+        openEventDialogById({ commit, state }, id) {
+            const existsEvent = state.events.find((item: any) => item.id === id);
             if (existsEvent) {
                 commit('openDialog');
                 commit('setDialogData', existsEvent);
