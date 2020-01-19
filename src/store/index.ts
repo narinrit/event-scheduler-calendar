@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 import moment from 'moment';
+import { IEvent } from '@/types/IEvent';
 
 Vue.use(Vuex);
 
@@ -53,7 +54,7 @@ export default new Vuex.Store({
                 repeat: 'week',
                 note: '',
             },
-        ],
+        ] as IEvent[],
         dialog: {
             open: false,
             data: null as any,
@@ -151,18 +152,6 @@ export default new Vuex.Store({
         setDialogData(state, data) {
             state.dialog.data = { ...data };
         },
-        openNewEventDialog(state) {
-            state.dialog.open = true;
-            state.dialog.data = {
-                id: null,
-                name: '',
-                start: moment().hour(9).minute(0).format('YYYY-MM-DD HH:mm'),
-                end: moment().hour(10).minute(0).format('YYYY-MM-DD HH:mm'),
-                color: 'primary',
-                repeat: null,
-                note: '',
-            };
-        },
     },
     actions: {
         openNewEventDialog({ commit }) {
@@ -175,7 +164,7 @@ export default new Vuex.Store({
                 color: 'primary',
                 repeat: null,
                 note: '',
-            });
+            } as IEvent);
         },
         openEventDialogById({ commit, getters }, id) {
             const existsEvent = getters.events.find((item: any) => item.id === id);
