@@ -263,7 +263,6 @@ export default Vue.extend({
             },
             set(val: string) {
                 const newMoment = moment(`2000-01-01 ${val}`);
-                console.log(newMoment.hour());
                 this.form.start = moment(this.form.start)
                     .hour(newMoment.hour())
                     .minute(newMoment.minute())
