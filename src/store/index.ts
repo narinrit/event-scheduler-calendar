@@ -38,7 +38,7 @@ export default new Vuex.Store({
             },
             {
                 id: 4,
-                name: 'Running as lumpini park',
+                name: 'Running at lumpini park',
                 start: '2019-12-20 18:00',
                 end: '2019-12-20 19:00',
                 color: 'green',
