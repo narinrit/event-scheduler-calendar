@@ -55,7 +55,6 @@ export default new Vuex.Store({
         events(state) {
             const currentMoment = moment(state.calendarDate || undefined).startOf('month');
 
-            // In this day
             let events: any[] = [];
 
             for (let i = 1; i <= currentMoment.daysInMonth(); i += 1) {
